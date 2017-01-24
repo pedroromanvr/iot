@@ -15,6 +15,7 @@ sudo apt-get install build-essential python-dev
 ````
 
 Install the library by downloading with the download link on the right, unzipping the archive, and executing:
+git clone https://github.com/adafruit/Adafruit_Python_DHT
 
 ````
 sudo python setup.py install
