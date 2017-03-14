@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import subprocess
  
-sensor = 7 #your GPIO on RPI
+sensor = 25 #your GPIO on RPI
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(sensor, GPIO.IN, GPIO.PUD_DOWN)
  
