@@ -1,0 +1,476 @@
+[
+    {
+        "id": "710790c.0a5a07",
+        "type": "inject",
+        "z": "aaeb4270.65bdf",
+        "name": "Delta",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "x": 160,
+        "y": 146.5,
+        "wires": [
+            [
+                "b56e188f.e1b5f8",
+                "631a87dd.bed298",
+                "65b7ea82.fca6a4",
+                "47f3b6d.57a2648"
+            ]
+        ]
+    },
+    {
+        "id": "b56e188f.e1b5f8",
+        "type": "exec",
+        "z": "aaeb4270.65bdf",
+        "command": "\"/home/pi/bin/getCpuTemp.sh\"",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "",
+        "timer": "",
+        "name": "CPU Temp",
+        "x": 341,
+        "y": 86,
+        "wires": [
+            [
+                "6511fcc1.68e9e4"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "631a87dd.bed298",
+        "type": "exec",
+        "z": "aaeb4270.65bdf",
+        "command": "\"/home/pi/bin/getCpuUsage.sh\"",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "",
+        "timer": "",
+        "name": "CPU Usage",
+        "x": 341,
+        "y": 146,
+        "wires": [
+            [
+                "3397ad2d.80f5d2"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "65b7ea82.fca6a4",
+        "type": "exec",
+        "z": "aaeb4270.65bdf",
+        "command": "\"/home/pi/bin/getMemUsage.sh\"",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "",
+        "timer": "",
+        "name": "Mem Usage",
+        "x": 341,
+        "y": 207,
+        "wires": [
+            [
+                "611efd27.46b364"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "6511fcc1.68e9e4",
+        "type": "mqtt out",
+        "z": "aaeb4270.65bdf",
+        "name": "CPU Temp",
+        "topic": "/pi/home/cputemp",
+        "qos": "2",
+        "retain": "false",
+        "broker": "23f84feb.d9de2",
+        "x": 558,
+        "y": 73,
+        "wires": []
+    },
+    {
+        "id": "3397ad2d.80f5d2",
+        "type": "mqtt out",
+        "z": "aaeb4270.65bdf",
+        "name": "CPU Use",
+        "topic": "/pi/home/cpuuse",
+        "qos": "2",
+        "retain": "false",
+        "broker": "23f84feb.d9de2",
+        "x": 549,
+        "y": 134,
+        "wires": []
+    },
+    {
+        "id": "611efd27.46b364",
+        "type": "mqtt out",
+        "z": "aaeb4270.65bdf",
+        "name": "Mem Use",
+        "topic": "/pi/home/memuse",
+        "qos": "2",
+        "retain": "false",
+        "broker": "23f84feb.d9de2",
+        "x": 550,
+        "y": 201,
+        "wires": []
+    },
+    {
+        "id": "8e9510c3.f01c",
+        "type": "rpi-gpio in",
+        "z": "aaeb4270.65bdf",
+        "name": "Presence",
+        "pin": "22",
+        "intype": "down",
+        "debounce": "25",
+        "read": false,
+        "x": 145,
+        "y": 331,
+        "wires": [
+            [
+                "98c84b2e.4370f8"
+            ]
+        ]
+    },
+    {
+        "id": "bb669bd.f834468",
+        "type": "function",
+        "z": "aaeb4270.65bdf",
+        "name": "JOIN",
+        "func": "context.data = context.data || new Object();\n\nswitch (msg.topic) {\n    case \"tensec\":\n        context.data.tensec = msg.payload;\n        msg = null;\n        break;\n    case \"pres\":\n        context.data.press = msg.payload;\n        msg = null;\n        break;\n    default:\n        msg = null;\n    \tbreak;\n\n}\n\nif(context.data.tensec != null && \n   context.data.press != null) {\n\tmsg2 = new Object();\n    msg2.payload = \"do\";\n    context.data = null;\n\treturn msg2;\n} else return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 464,
+        "y": 318,
+        "wires": [
+            [
+                "8dbb8bfe.50d0d8"
+            ]
+        ]
+    },
+    {
+        "id": "819473fb.98877",
+        "type": "inject",
+        "z": "aaeb4270.65bdf",
+        "name": "Delta 5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "x": 154,
+        "y": 558,
+        "wires": [
+            [
+                "17284ac4.0acc95"
+            ]
+        ]
+    },
+    {
+        "id": "17284ac4.0acc95",
+        "type": "exec",
+        "z": "aaeb4270.65bdf",
+        "command": "\"/home/pi/pTests/iot/sensors/srdht11.py\"",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "",
+        "timer": "",
+        "name": "Temp Hum",
+        "x": 365,
+        "y": 559,
+        "wires": [
+            [
+                "c5524d69.4e425"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "c5524d69.4e425",
+        "type": "function",
+        "z": "aaeb4270.65bdf",
+        "name": "Parse output",
+        "func": "msg.payload = JSON.parse(msg.payload);\n//Format is {\"temp\":\"23.2\",\"hum\":\"30.0\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 564,
+        "y": 546,
+        "wires": [
+            [
+                "fc7e897d.b7ca78",
+                "4c350a62.361f34"
+            ]
+        ]
+    },
+    {
+        "id": "7eec2f6a.f2681",
+        "type": "mqtt out",
+        "z": "aaeb4270.65bdf",
+        "name": "Home temp",
+        "topic": "/sensors/home/temp",
+        "qos": "2",
+        "retain": "false",
+        "broker": "23f84feb.d9de2",
+        "x": 911,
+        "y": 524,
+        "wires": []
+    },
+    {
+        "id": "fc7e897d.b7ca78",
+        "type": "change",
+        "z": "aaeb4270.65bdf",
+        "name": "Temp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 725,
+        "y": 524,
+        "wires": [
+            [
+                "7eec2f6a.f2681"
+            ]
+        ]
+    },
+    {
+        "id": "4c350a62.361f34",
+        "type": "change",
+        "z": "aaeb4270.65bdf",
+        "name": "Humidity",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.hum",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 735,
+        "y": 589,
+        "wires": [
+            [
+                "81231893.302fe8"
+            ]
+        ]
+    },
+    {
+        "id": "81231893.302fe8",
+        "type": "mqtt out",
+        "z": "aaeb4270.65bdf",
+        "name": "Home hum",
+        "topic": "/sensors/home/hum",
+        "qos": "2",
+        "retain": "false",
+        "broker": "23f84feb.d9de2",
+        "x": 912,
+        "y": 589,
+        "wires": []
+    },
+    {
+        "id": "c9996725.7202c8",
+        "type": "http request",
+        "z": "aaeb4270.65bdf",
+        "name": "AtHomeStatus",
+        "method": "GET",
+        "ret": "txt",
+        "url": "http://ec2-54-89-176-127.compute-1.amazonaws.com:1880/home",
+        "tls": "",
+        "x": 744,
+        "y": 318,
+        "wires": [
+            [
+                "2569ac97.8fd074"
+            ]
+        ]
+    },
+    {
+        "id": "70097063.b6a0a",
+        "type": "mqtt out",
+        "z": "aaeb4270.65bdf",
+        "name": "Home alert",
+        "topic": "/sensors/home/alert",
+        "qos": "2",
+        "retain": "false",
+        "broker": "23f84feb.d9de2",
+        "x": 943,
+        "y": 365,
+        "wires": []
+    },
+    {
+        "id": "b9e875c5.8be788",
+        "type": "switch",
+        "z": "aaeb4270.65bdf",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "alert",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 757,
+        "y": 365,
+        "wires": [
+            [
+                "70097063.b6a0a",
+                "d06341fa.6aee4"
+            ]
+        ]
+    },
+    {
+        "id": "7c18b2b0.c4ad2c",
+        "type": "exec",
+        "z": "aaeb4270.65bdf",
+        "command": "/home/pi/bin/tnspic.sh",
+        "addpay": false,
+        "append": "",
+        "useSpawn": false,
+        "timer": "5",
+        "name": "",
+        "x": 971,
+        "y": 422.5,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d06341fa.6aee4",
+        "type": "delay",
+        "z": "aaeb4270.65bdf",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "20",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 948,
+        "y": 465,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "47f3b6d.57a2648",
+        "type": "function",
+        "z": "aaeb4270.65bdf",
+        "name": "10 sec",
+        "func": "msg.topic = \"tensec\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 320,
+        "y": 280,
+        "wires": [
+            [
+                "bb669bd.f834468"
+            ]
+        ]
+    },
+    {
+        "id": "98c84b2e.4370f8",
+        "type": "function",
+        "z": "aaeb4270.65bdf",
+        "name": "Presence",
+        "func": "msg.topic = \"pres\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 313,
+        "y": 355,
+        "wires": [
+            [
+                "bb669bd.f834468"
+            ]
+        ]
+    },
+    {
+        "id": "2569ac97.8fd074",
+        "type": "function",
+        "z": "aaeb4270.65bdf",
+        "name": "Alert at home",
+        "func": "msg = JSON.parse(msg.payload);\nif (msg.payload == \"exited\") {\n    msg.payload = \"alert\";\n} else {\n    msg.payload = \"ok\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 606,
+        "y": 365,
+        "wires": [
+            [
+                "b9e875c5.8be788"
+            ]
+        ]
+    },
+    {
+        "id": "8dbb8bfe.50d0d8",
+        "type": "switch",
+        "z": "aaeb4270.65bdf",
+        "name": "doif",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "do",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 584,
+        "y": 318,
+        "wires": [
+            [
+                "c9996725.7202c8"
+            ]
+        ]
+    },
+    {
+        "id": "23f84feb.d9de2",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "ec2-54-89-176-127.compute-1.amazonaws.com",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
