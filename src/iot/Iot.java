@@ -46,8 +46,7 @@ public class Iot {
             System.out.println("Publishing message: "+content);
             MqttMessage message = new MqttMessage(content.getBytes());
             message.setQos(qos);
-            sampleClient.publish(topic, message);
-            sampleClient.
+            sampleClient.publish(topic, message);            
             System.out.println("Message published");
             sampleClient.disconnect();
             System.out.println("Disconnected");
