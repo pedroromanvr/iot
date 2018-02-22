@@ -16,7 +16,6 @@
  */
 package iot.mqtt;
 
-import java.util.logging.Logger;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
